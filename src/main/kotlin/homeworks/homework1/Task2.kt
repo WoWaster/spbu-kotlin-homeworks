@@ -1,5 +1,7 @@
 package homeworks.homework1
 
+import kotlin.system.exitProcess
+
 fun sieveOfEratosthenes(bound: Int): IntArray {
     val numbers = BooleanArray(bound + 1) { true }
     numbers[0] = false
@@ -28,9 +30,15 @@ fun sieveOfEratosthenes(bound: Int): IntArray {
 }
 
 fun main() {
-    println("This app will print every prime below given.")
-    print("Please enter n: ")
+    println("This app will print every prime below given number.")
+    print("Please enter number: ")
     val number = readln().toInt()
+
+    if (number < 2) {
+        println("There are no primes below $number.")
+        exitProcess(0)
+    }
+
     val primes = sieveOfEratosthenes(number)
     print("All primes below $number: ")
     for (prime in primes)
