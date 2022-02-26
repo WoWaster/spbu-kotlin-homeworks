@@ -20,9 +20,9 @@ fun sieveOfEratosthenes(bound: Int): IntArray {
     }
 
     val primes = mutableListOf<Int>()
-    for ((digit, isPrime) in isPrimeNumber.withIndex()) {
+    for ((index, isPrime) in isPrimeNumber.withIndex()) {
         if (isPrime) {
-            primes.add(digit)
+            primes.add(index)
         }
     }
 
