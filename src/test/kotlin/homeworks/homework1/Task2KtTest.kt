@@ -1,6 +1,7 @@
 package homeworks.homework1
 
 import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -26,6 +27,7 @@ internal class Task2KtTest {
 
     @Test
     fun `input below 0`() {
-        assertThrows<IllegalArgumentException> { sieveOfEratosthenes(-42) }
+        val exception = assertThrows<IllegalArgumentException> { sieveOfEratosthenes(-42) }
+        assertEquals("bound can't be below 0", exception.message)
     }
 }
