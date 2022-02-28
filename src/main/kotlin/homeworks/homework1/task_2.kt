@@ -2,10 +2,10 @@ package homeworks.homework1
 
 import kotlin.system.exitProcess
 
-fun sieveOfEratosthenes(bound: Int): IntArray {
+fun sieveOfEratosthenes(bound: Int): List<Int> {
     require(bound > -1) { "bound can't be below 0" }
 
-    val isPrimeNumber = BooleanArray(bound + 1) { true }
+    val isPrimeNumber = MutableList(bound + 1) { true }
     isPrimeNumber[0] = false
     isPrimeNumber[1] = false
 
@@ -19,14 +19,7 @@ fun sieveOfEratosthenes(bound: Int): IntArray {
         number++
     }
 
-    val primes = mutableListOf<Int>()
-    for ((index, isPrime) in isPrimeNumber.withIndex()) {
-        if (isPrime) {
-            primes.add(index)
-        }
-    }
-
-    return primes.toIntArray()
+    return isPrimeNumber.mapIndexedNotNull { index, isPrime -> if (isPrime) index else null }
 }
 
 fun main() {
