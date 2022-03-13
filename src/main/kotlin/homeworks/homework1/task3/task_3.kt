@@ -47,10 +47,10 @@ class PerformedCommandStorageCLI(private val storage: PerformedCommandStorage) {
                 )
             )
             input[0] == "undo" -> {
-                if (storage.hasActions()) {
+                try {
                     storage.undoAction()
-                } else {
-                    println("No actions to undo.")
+                } catch (e: IllegalArgumentException) {
+                    println(e.message)
                 }
             }
             input[0] == "exit" -> isRunning = false

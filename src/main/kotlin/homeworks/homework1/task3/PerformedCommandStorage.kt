@@ -16,12 +16,8 @@ class PerformedCommandStorage {
     }
 
     fun undoAction() {
-        require(this.hasActions()) { "No actions to undo." }
+        require(actions.isNotEmpty()) { "No actions to undo." }
         val action = actions.removeLast()
         action.undoAction(_numbers)
-    }
-
-    fun hasActions(): Boolean {
-        return actions.isNotEmpty()
     }
 }

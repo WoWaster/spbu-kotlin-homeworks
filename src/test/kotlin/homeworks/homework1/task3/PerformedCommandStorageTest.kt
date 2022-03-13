@@ -1,7 +1,6 @@
 package homeworks.homework1.task3
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -17,7 +16,6 @@ internal class PerformedCommandStorageTest {
     fun `empty storage`() {
         val storage = PerformedCommandStorage()
         assertEquals(listOf<Int>(), storage.numbers)
-        assertFalse(storage.hasActions())
     }
 
     @Test
