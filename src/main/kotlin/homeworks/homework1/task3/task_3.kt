@@ -24,7 +24,7 @@ class PerformedCommandStorageCLI(private val storage: PerformedCommandStorage) {
         * print - prints current numbers in storage
         * addFirst N - adds N to the head of the numbers list
         * addLast N - adds N to the tail of the numbers list
-        * swap N M - swaps elements with indexes N and M in list
+        * swap N M - moves element at index N to index M
         * undo - reverts last command
         * exit 
     """.trimIndent()

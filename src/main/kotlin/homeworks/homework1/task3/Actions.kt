@@ -25,17 +25,13 @@ class AddLastAction(private val number: Int) : Action {
     }
 }
 
-class SwapAction(private val index1: Int, private val index2: Int) : Action {
-    private fun MutableList<Int>.swap(index1: Int, index2: Int) {
-        this[index1] = this[index2].also { this[index2] = this[index1] }
-    }
-
+class SwapAction(private val indexFrom: Int, private val indexTo: Int) : Action {
     override fun doAction(list: MutableList<Int>) {
-        require(list.lastIndex >= index1 && list.lastIndex >= index2) { "Index(-es) out of list bounds" }
-        list.swap(index1, index2)
+        require(indexFrom in 0..list.lastIndex && indexTo in 0..list.lastIndex) { "Index(-es) out of list bounds" }
+        list.add(indexTo, list.removeAt(indexFrom))
     }
 
     override fun undoAction(list: MutableList<Int>) {
-        list.swap(index1, index2)
+        list.add(indexFrom, list.removeAt(indexTo))
     }
 }

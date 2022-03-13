@@ -39,8 +39,9 @@ internal class PerformedCommandStorageTest {
         val storage = PerformedCommandStorage()
         storage.newAction(AddLastAction(1))
         storage.newAction(AddLastAction(2))
-        storage.newAction(SwapAction(0, 1))
-        assertEquals(listOf(2, 1), storage.numbers)
+        storage.newAction(AddLastAction(3))
+        storage.newAction(SwapAction(0, 2))
+        assertEquals(listOf(2, 3, 1), storage.numbers)
     }
 
     @Test
@@ -71,10 +72,11 @@ internal class PerformedCommandStorageTest {
 
         storage.newAction(AddFirstAction(1))
         storage.newAction(AddLastAction(2))
-        storage.newAction(SwapAction(0, 1))
+        storage.newAction(AddLastAction(3))
+        storage.newAction(SwapAction(0, 2))
 
         storage.undoAction()
-        assertEquals(listOf(1, 2), storage.numbers)
+        assertEquals(listOf(1, 2, 3), storage.numbers)
     }
 
     @Test
