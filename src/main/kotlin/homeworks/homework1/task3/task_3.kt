@@ -1,17 +1,11 @@
 package homeworks.homework1.task3
 
-import kotlin.system.exitProcess
-
 fun main() {
     val storage = PerformedCommandStorage()
 
     val cli = PerformedCommandStorageCLI(storage)
 
-    while (true) {
-        print("Enter command or 'help' for list of available commands: ")
-        val command = readln().trim().split(" ")
-        cli.executeCommand(command)
-    }
+    cli.mainLoop()
 }
 
 class PerformedCommandStorageCLI(private val storage: PerformedCommandStorage) {
@@ -28,6 +22,8 @@ class PerformedCommandStorageCLI(private val storage: PerformedCommandStorage) {
         * undo - reverts last command
         * exit 
     """.trimIndent()
+
+    private var isRunning = true
 
     private fun String.isInt() = toIntOrNull()?.let { true } ?: false
 
@@ -57,11 +53,11 @@ class PerformedCommandStorageCLI(private val storage: PerformedCommandStorage) {
                     println("No actions to undo.")
                 }
             }
-            input[0] == "exit" -> exitProcess(0)
+            input[0] == "exit" -> isRunning = false
         }
     }
 
-    fun executeCommand(input: List<String>) {
+    private fun executeCommand(input: List<String>) {
         when {
             !isValidCommand(input[0]) -> println("Not a valid command.")
             !isArgumentNumberCorrect(input) -> println("Incorrect number of arguments.")
@@ -73,5 +69,13 @@ class PerformedCommandStorageCLI(private val storage: PerformedCommandStorage) {
         }
 
         runCommand(input)
+    }
+
+    fun mainLoop() {
+        while (isRunning) {
+            print("Enter command or 'help' for list of available commands: ")
+            val command = readln().trim().split(" ")
+            this.executeCommand(command)
+        }
     }
 }
