@@ -1,7 +1,7 @@
 package homeworks.homework1.task3
 
 class PerformedCommandStorage {
-    private val numbers = ArrayDeque<Int>()
+    private val numbers = mutableListOf<Int>()
     private val actions = mutableListOf<Action>()
     fun newAction(action: Action) {
         try {
