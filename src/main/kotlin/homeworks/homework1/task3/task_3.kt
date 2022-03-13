@@ -40,7 +40,7 @@ class PerformedCommandStorageCLI(private val storage: PerformedCommandStorage) {
         when {
             input[0] == "help" -> println(help)
             input[0] == "print" -> println(
-                storage.getNumbers().takeIf { it.isNotEmpty() }?.toString()?.removeSurrounding("[", "]")
+                storage.numbers.takeIf { it.isNotEmpty() }?.toString()?.removeSurrounding("[", "]")
                     ?: "Storage is empty"
             )
             input[0] == "addFirst" -> storage.newAction(AddFirstAction(input[1].toInt()))

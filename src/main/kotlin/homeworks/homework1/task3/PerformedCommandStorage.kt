@@ -1,11 +1,14 @@
 package homeworks.homework1.task3
 
 class PerformedCommandStorage {
-    private val numbers = mutableListOf<Int>()
+    private val _numbers = mutableListOf<Int>()
+    val numbers: List<Int>
+        get() = _numbers
+
     private val actions = mutableListOf<Action>()
     fun newAction(action: Action) {
         try {
-            action.doAction(numbers)
+            action.doAction(_numbers)
             actions.add(action)
         } catch (e: IllegalArgumentException) {
             println(e.message)
@@ -15,11 +18,7 @@ class PerformedCommandStorage {
     fun undoAction() {
         require(this.hasActions()) { "No actions to undo." }
         val action = actions.removeLast()
-        action.undoAction(numbers)
-    }
-
-    fun getNumbers(): List<Int> {
-        return numbers.toList()
+        action.undoAction(_numbers)
     }
 
     fun hasActions(): Boolean {

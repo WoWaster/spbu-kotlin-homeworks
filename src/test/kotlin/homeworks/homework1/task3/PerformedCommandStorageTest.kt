@@ -16,7 +16,7 @@ internal class PerformedCommandStorageTest {
     @Test
     fun `empty storage`() {
         val storage = PerformedCommandStorage()
-        assertEquals(listOf<Int>(), storage.getNumbers())
+        assertEquals(listOf<Int>(), storage.numbers)
         assertFalse(storage.hasActions())
     }
 
@@ -25,13 +25,13 @@ internal class PerformedCommandStorageTest {
         val storage = PerformedCommandStorage()
 
         storage.newAction(AddFirstAction(1))
-        assertEquals(listOf(1), storage.getNumbers())
+        assertEquals(listOf(1), storage.numbers)
 
         storage.newAction(AddLastAction(2))
-        assertEquals(listOf(1, 2), storage.getNumbers())
+        assertEquals(listOf(1, 2), storage.numbers)
 
         storage.newAction(AddFirstAction(3))
-        assertEquals(listOf(3, 1, 2), storage.getNumbers())
+        assertEquals(listOf(3, 1, 2), storage.numbers)
     }
 
     @Test
@@ -40,7 +40,7 @@ internal class PerformedCommandStorageTest {
         storage.newAction(AddLastAction(1))
         storage.newAction(AddLastAction(2))
         storage.newAction(SwapAction(0, 1))
-        assertEquals(listOf(2, 1), storage.getNumbers())
+        assertEquals(listOf(2, 1), storage.numbers)
     }
 
     @Test
@@ -51,7 +51,7 @@ internal class PerformedCommandStorageTest {
         storage.newAction(AddFirstAction(2))
         storage.undoAction()
 
-        assertEquals(listOf(1), storage.getNumbers())
+        assertEquals(listOf(1), storage.numbers)
     }
 
     @Test
@@ -62,7 +62,7 @@ internal class PerformedCommandStorageTest {
         storage.newAction(AddLastAction(1))
         storage.undoAction()
 
-        assertEquals(listOf(2), storage.getNumbers())
+        assertEquals(listOf(2), storage.numbers)
     }
 
     @Test
@@ -74,7 +74,7 @@ internal class PerformedCommandStorageTest {
         storage.newAction(SwapAction(0, 1))
 
         storage.undoAction()
-        assertEquals(listOf(1, 2), storage.getNumbers())
+        assertEquals(listOf(1, 2), storage.numbers)
     }
 
     @Test
