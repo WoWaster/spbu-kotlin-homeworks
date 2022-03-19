@@ -6,6 +6,7 @@ class PerformedCommandStorage {
         get() = _numbers
 
     private val actions = mutableListOf<Action>()
+
     fun newAction(action: Action) {
         try {
             action.doAction(_numbers)

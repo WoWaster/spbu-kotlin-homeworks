@@ -27,11 +27,13 @@ class AddLastAction(private val number: Int) : Action {
 
 class SwapAction(private val indexFrom: Int, private val indexTo: Int) : Action {
     override fun doAction(list: MutableList<Int>) {
-        require(indexFrom in 0..list.lastIndex && indexTo in 0..list.lastIndex) { "Index(-es) out of list bounds" }
-        list.add(indexTo, list.removeAt(indexFrom))
+        require(indexFrom in list.indices && indexTo in list.indices) { "Index(-es) out of list bounds" }
+        val element = list.removeAt(indexFrom)
+        list.add(indexTo, element)
     }
 
     override fun undoAction(list: MutableList<Int>) {
-        list.add(indexFrom, list.removeAt(indexTo))
+        val element = list.removeAt(indexTo)
+        list.add(indexFrom, element)
     }
 }
