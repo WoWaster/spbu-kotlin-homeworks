@@ -101,37 +101,18 @@ class AvlTree<K : Comparable<K>, V> : MutableMap<K, V> {
     on entries field and having two public iterators confuses compiler and IDE.
      */
     private fun iterator(): Iterator<AvlNode<K, V>> =
-        object : Iterator<AvlNode<K, V>> {
-            private var current: AvlNode<K, V>? = root
-            private var visitedNodes = 0
-
-            override fun hasNext(): Boolean = visitedNodes < size
-
-            @Suppress("ReturnCount")
-            override fun next(): AvlNode<K, V> {
-                if (!hasNext()) {
-                    throw NoSuchElementException("Iterator out of range.")
+        iterator {
+            val stack = ArrayDeque<AvlNode<K, V>>()
+            var current = root
+            while (stack.isNotEmpty() || current != null) {
+                if (current != null) {
+                    stack.addFirst(current)
+                    current = current.leftChild
+                } else {
+                    current = stack.removeFirst()
+                    yield(current)
+                    current = current.rightChild
                 }
-
-                if (visitedNodes == 0) {
-                    current = current?.minimum()
-                    visitedNodes++
-                    return current ?: throw IllegalStateException("Iterator error.")
-                }
-
-                if (current?.rightChild != null) {
-                    current = current?.rightChild?.minimum()
-                    visitedNodes++
-                    return current ?: throw IllegalStateException("Iterator error.")
-                }
-
-                while (current?.parent != null && current?.parent?.leftChild != current) {
-                    current = current?.parent
-                }
-
-                current = current?.parent
-                visitedNodes++
-                return current ?: throw IllegalStateException("Iterator error.")
             }
         }
 
