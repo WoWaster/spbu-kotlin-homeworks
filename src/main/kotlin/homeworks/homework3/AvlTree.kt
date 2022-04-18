@@ -11,17 +11,13 @@ class AvlTree<K : Comparable<K>, V> : MutableMap<K, V> {
     override fun containsKey(key: K): Boolean = get(key) != null
 
     override fun containsValue(value: V): Boolean {
-        val it = iterator()
-        while (it.hasNext()) {
-            val current = it.next()
-            if (current.value == value) return true
-        }
+        iterator().forEach { if (it.value == value) return true }
         return false
     }
 
     override fun get(key: K): V? = root?.get(key)
 
-    override fun isEmpty(): Boolean = root == null
+    override fun isEmpty(): Boolean = size == 0
 
     override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
         get() = iterator().asSequence().toMutableSet()
@@ -31,10 +27,8 @@ class AvlTree<K : Comparable<K>, V> : MutableMap<K, V> {
         get() = iterator().asSequence().map { it.value }.toMutableList()
 
     override fun clear() {
-        if (root != null) {
-            root = null
-            size = 0
-        }
+        root = null
+        size = 0
     }
 
     @Suppress("ReturnCount")
@@ -162,9 +156,3 @@ class AvlTree<K : Comparable<K>, V> : MutableMap<K, V> {
 
 fun <K : Comparable<K>, V> avlTreeOf(vararg pairs: Pair<K, V>): AvlTree<K, V> =
     AvlTree<K, V>().apply { this.putAll(pairs) }
-
-fun sign(value: Int): Int = when {
-    value > 0 -> 1
-    value < 0 -> -1
-    else -> 0
-}

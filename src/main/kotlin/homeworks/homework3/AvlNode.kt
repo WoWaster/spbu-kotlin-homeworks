@@ -1,20 +1,14 @@
 package homeworks.homework3
 
-@Suppress("TooManyFunctions")
-class AvlNode<K : Comparable<K>, V> internal constructor(key: K, value: V) : MutableMap.MutableEntry<K, V> {
-    internal constructor(key: K, value: V, parentNode: AvlNode<K, V>?) : this(key, value) {
-        parent = parentNode
-    }
-
-    override var key: K = key
-        internal set
-    override var value: V = value
-        internal set
+internal class AvlNode<K : Comparable<K>, V>(
+    override val key: K,
+    override var value: V,
+    var parent: AvlNode<K, V>?
+) : MutableMap.MutableEntry<K, V> {
 
     private var height = 0
-    internal var parent: AvlNode<K, V>? = null
-    internal var leftChild: AvlNode<K, V>? = null
-    internal var rightChild: AvlNode<K, V>? = null
+    var leftChild: AvlNode<K, V>? = null
+    var rightChild: AvlNode<K, V>? = null
 
     private fun updateHeight() {
         val heightLeft = leftChild?.height ?: -1
@@ -22,11 +16,12 @@ class AvlNode<K : Comparable<K>, V> internal constructor(key: K, value: V) : Mut
         height = maxOf(heightLeft, heightRight) + 1
     }
 
-    private fun getBalanceFactor(): Int {
-        val heightLeft = leftChild?.height ?: -1
-        val heightRight = rightChild?.height ?: -1
-        return heightRight - heightLeft
-    }
+    private val balanceFactor: Int
+        get() {
+            val heightLeft = leftChild?.height ?: -1
+            val heightRight = rightChild?.height ?: -1
+            return heightRight - heightLeft
+        }
 
     private fun rotateRight(): AvlNode<K, V> {
         val child = leftChild ?: throw IllegalStateException("Impossible right turn.")
@@ -52,18 +47,24 @@ class AvlNode<K : Comparable<K>, V> internal constructor(key: K, value: V) : Mut
         return child
     }
 
-    @Suppress("MagicNumber")
-    internal fun balance(): AvlNode<K, V> {
+    companion object {
+        const val LEFT_OVERLOAD = -2
+        const val LEFT_HEAVY = -1
+        const val RIGHT_HEAVY = 1
+        const val RIGHT_OVERLOAD = 2
+    }
+
+    fun balance(): AvlNode<K, V> {
         updateHeight()
-        return when (getBalanceFactor()) {
-            2 -> {
-                if ((rightChild?.getBalanceFactor() ?: 0) == -1) {
+        return when (balanceFactor) {
+            RIGHT_OVERLOAD -> {
+                if ((rightChild?.balanceFactor ?: 0) == LEFT_HEAVY) {
                     rightChild = rightChild?.rotateRight()
                 }
                 rotateLeft()
             }
-            -2 -> {
-                if ((leftChild?.getBalanceFactor() ?: 0) == 1) {
+            LEFT_OVERLOAD -> {
+                if ((leftChild?.balanceFactor ?: 0) == RIGHT_HEAVY) {
                     leftChild = leftChild?.rotateLeft()
                 }
                 rotateRight()
@@ -72,11 +73,11 @@ class AvlNode<K : Comparable<K>, V> internal constructor(key: K, value: V) : Mut
         }
     }
 
-    internal fun minimum(): AvlNode<K, V> {
+    fun minimum(): AvlNode<K, V> {
         return leftChild?.minimum() ?: this
     }
 
-    internal fun removeMinimum(): AvlNode<K, V>? {
+    fun removeMinimum(): AvlNode<K, V>? {
         if (leftChild == null) {
             return rightChild
         }
@@ -92,23 +93,20 @@ class AvlNode<K : Comparable<K>, V> internal constructor(key: K, value: V) : Mut
 
     override fun toString(): String = "$key=$value"
 
-    @Suppress("ReturnCount")
-    internal fun get(key: K): V? {
-        when (sign(key.compareTo(this.key))) {
-            0 -> return value
-            -1 -> if (leftChild != null) return leftChild?.get(key)
-            1 -> if (rightChild != null) return rightChild?.get(key)
-        }
-        return null
+    fun get(key: K): V? = when {
+        key < this.key -> leftChild?.get(key)
+        key > this.key -> rightChild?.get(key)
+        key == this.key -> value
+        else -> null
     }
 
-    internal fun prettyPrint(level: Int = 0) {
+    fun prettyPrint(level: Int = 0) {
         /* These characters are written as unicode hexadecimals because they
          can easily be confused to their analogs which will not produce ligatures in terminals */
         val append = "\u251C" + "\u2500".repeat(level)
 
         println("$append$key: $value")
-        if (leftChild != null) leftChild?.prettyPrint(level + 1)
-        if (rightChild != null) rightChild?.prettyPrint(level + 1)
+        leftChild?.prettyPrint(level + 1)
+        rightChild?.prettyPrint(level + 1)
     }
 }
