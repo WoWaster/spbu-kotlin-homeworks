@@ -31,68 +31,23 @@ class AvlTree<K : Comparable<K>, V> : MutableMap<K, V> {
         size = 0
     }
 
-    @Suppress("ReturnCount")
-    private fun putNode(node: AvlNode<K, V>?, key: K, value: V, parentNode: AvlNode<K, V>?): AvlNode<K, V> {
-        if (node == null) {
-            size++
-            return AvlNode(key, value, parentNode)
-        }
-
-        when (sign(key.compareTo(node.key))) {
-            -1 -> node.leftChild = putNode(node.leftChild, key, value, node)
-            1 -> node.rightChild = putNode(node.rightChild, key, value, node)
-            0 -> return node.also { it.value = value }
-        }
-
-        return node.balance()
-    }
-
     override fun put(key: K, value: V): V? {
         val previousValue = get(key)
         root = putNode(root, key, value, root)
+        if (previousValue == null) {
+            size++
+        }
         return previousValue
     }
 
     override fun putAll(from: Map<out K, V>) = from.forEach { put(it.key, it.value) }
 
-    @Suppress("ReturnCount")
-    private fun removeNode(node: AvlNode<K, V>?, key: K, parentNode: AvlNode<K, V>?): AvlNode<K, V>? {
-        if (node == null) {
-            return null
-        }
-
-        when (sign(key.compareTo(node.key))) {
-            -1 -> node.leftChild = removeNode(node.leftChild, key, node)
-            1 -> node.rightChild = removeNode(node.rightChild, key, node)
-            0 -> {
-                val leftChild = node.leftChild
-                val rightChild = node.rightChild
-                if (leftChild == null && rightChild == null) {
-                    size--
-                    return null
-                }
-                if (rightChild == null) {
-                    leftChild?.parent = parentNode
-                    size--
-                    return leftChild
-                }
-                val minimumInRightTree = rightChild.minimum()
-                minimumInRightTree.rightChild = rightChild.removeMinimum()
-                minimumInRightTree.rightChild?.parent = minimumInRightTree
-                minimumInRightTree.leftChild = leftChild
-                leftChild?.parent = minimumInRightTree
-                minimumInRightTree.parent = parentNode
-                size--
-                return minimumInRightTree.balance()
-            }
-        }
-
-        return node.balance()
-    }
-
     override fun remove(key: K): V? {
         val value = get(key)
-        root = removeNode(root, key, root?.parent)
+        if (value != null) {
+            root = removeNode(root, key, root?.parent)
+            size--
+        }
         return value
     }
 
@@ -132,6 +87,69 @@ class AvlTree<K : Comparable<K>, V> : MutableMap<K, V> {
     fun prettyPrint() {
         if (root == null) return
         root?.prettyPrint()
+    }
+
+    companion object {
+        private fun <K : Comparable<K>, V> putNode(
+            node: AvlNode<K, V>?,
+            key: K,
+            value: V,
+            parentNode: AvlNode<K, V>?
+        ): AvlNode<K, V> {
+            if (node == null) {
+                return AvlNode(key, value, parentNode)
+            }
+
+            when {
+                key < node.key -> node.leftChild = putNode(node.leftChild, key, value, node)
+                key > node.key -> node.rightChild = putNode(node.rightChild, key, value, node)
+                key == node.key -> node.value = value
+            }
+
+            return node.balance()
+        }
+
+        private fun <K : Comparable<K>, V> removeMatchingNode(
+            node: AvlNode<K, V>,
+            parentNode: AvlNode<K, V>?
+        ): AvlNode<K, V>? {
+            val leftChild = node.leftChild
+            val rightChild = node.rightChild
+            if (rightChild == null) {
+                leftChild?.parent = parentNode
+                return leftChild
+            }
+            val minimumInRightTree = rightChild.minimum()
+            minimumInRightTree.rightChild = rightChild.removeMinimum()
+            minimumInRightTree.rightChild?.parent = minimumInRightTree
+            minimumInRightTree.leftChild = leftChild
+            leftChild?.parent = minimumInRightTree
+            minimumInRightTree.parent = parentNode
+            return minimumInRightTree.balance()
+        }
+
+        private fun <K : Comparable<K>, V> removeNode(
+            node: AvlNode<K, V>?,
+            key: K,
+            parentNode: AvlNode<K, V>?
+        ): AvlNode<K, V>? {
+            if (node == null) {
+                return null
+            }
+
+            return when {
+                key < node.key -> {
+                    node.leftChild = removeNode(node.leftChild, key, node)
+                    node.balance()
+                }
+                key > node.key -> {
+                    node.rightChild = removeNode(node.rightChild, key, node)
+                    node.balance()
+                }
+                key == node.key -> removeMatchingNode(node, parentNode)
+                else -> null
+            }
+        }
     }
 }
 
