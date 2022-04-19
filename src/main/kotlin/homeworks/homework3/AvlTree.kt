@@ -1,6 +1,5 @@
 package homeworks.homework3
 
-@Suppress("TooManyFunctions")
 class AvlTree<K : Comparable<K>, V> : MutableMap<K, V> {
 
     private var root: AvlNode<K, V>? = null
@@ -71,23 +70,7 @@ class AvlTree<K : Comparable<K>, V> : MutableMap<K, V> {
             }
         }
 
-    override fun toString(): String {
-        val sb = StringBuilder()
-        sb.append("{")
-        var i = 0
-        iterator().forEach {
-            if (i > 0) sb.append(", ")
-            sb.append(it.toString())
-            i++
-        }
-        sb.append("}")
-        return sb.toString()
-    }
-
-    fun prettyPrint() {
-        if (root == null) return
-        root?.prettyPrint()
-    }
+    override fun toString(): String = root?.prettyPrint() ?: ""
 
     companion object {
         private fun <K : Comparable<K>, V> putNode(

@@ -36,7 +36,7 @@ fun main() {
     )
 
     println("Initial tree:")
-    avl.prettyPrint()
+    println(avl)
 
     avl["lime"] = 58
     avl["mango"] = 247
@@ -48,6 +48,6 @@ fun main() {
     avl.remove("tomato")
     avl.remove("tangerine")
 
-    println("Tree after some value updates and removals:")
-    avl.prettyPrint()
+    println("\nTree after some value updates and removals:")
+    println(avl)
 }

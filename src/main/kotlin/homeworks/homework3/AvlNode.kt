@@ -100,13 +100,17 @@ internal class AvlNode<K : Comparable<K>, V>(
         else -> null
     }
 
-    fun prettyPrint(level: Int = 0) {
+    fun prettyPrint(level: Int = 0): String {
         /* These characters are written as unicode hexadecimals because they
          can easily be confused to their analogs which will not produce ligatures in terminals */
-        val append = "\u251C" + "\u2500".repeat(level)
+        val indentation = "\u251C" + "\u2500".repeat(level)
 
-        println("$append$key: $value")
-        leftChild?.prettyPrint(level + 1)
-        rightChild?.prettyPrint(level + 1)
+        val treeView = StringBuilder()
+        treeView.append("$indentation$key: $value\n")
+
+        leftChild?.prettyPrint(level + 1).let { if (it != null) treeView.append(it) }
+        rightChild?.prettyPrint(level + 1).let { if (it != null) treeView.append(it) }
+
+        return treeView.toString()
     }
 }
