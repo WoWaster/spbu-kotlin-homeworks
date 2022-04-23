@@ -9,10 +9,7 @@ class AvlTree<K : Comparable<K>, V> : MutableMap<K, V> {
 
     override fun containsKey(key: K): Boolean = get(key) != null
 
-    override fun containsValue(value: V): Boolean {
-        iterator().forEach { if (it.value == value) return true }
-        return false
-    }
+    override fun containsValue(value: V): Boolean = value in values
 
     override fun get(key: K): V? = root?.get(key)
 
@@ -54,21 +51,9 @@ class AvlTree<K : Comparable<K>, V> : MutableMap<K, V> {
     In-order iterator for AVL tree. It's private because kotlin stdlib iterator for map is based
     on entries field and having two public iterators confuses compiler and IDE.
      */
-    private fun iterator(): Iterator<AvlNode<K, V>> =
-        iterator {
-            val stack = ArrayDeque<AvlNode<K, V>>()
-            var current = root
-            while (stack.isNotEmpty() || current != null) {
-                if (current != null) {
-                    stack.addFirst(current)
-                    current = current.leftChild
-                } else {
-                    current = stack.removeFirst()
-                    yield(current)
-                    current = current.rightChild
-                }
-            }
-        }
+    private fun iterator(): Iterator<AvlNode<K, V>> = iterator {
+        root?.let { yieldAll(it.iterator()) }
+    }
 
     override fun toString(): String = root?.prettyPrint() ?: ""
 
@@ -102,7 +87,7 @@ class AvlTree<K : Comparable<K>, V> : MutableMap<K, V> {
                 leftChild?.parent = parentNode
                 return leftChild
             }
-            val minimumInRightTree = rightChild.minimum()
+            val minimumInRightTree = rightChild.minimum
             minimumInRightTree.rightChild = rightChild.removeMinimum()
             minimumInRightTree.rightChild?.parent = minimumInRightTree
             minimumInRightTree.leftChild = leftChild

@@ -2,9 +2,12 @@ package homeworks.homework3
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Named
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
 internal class AvlTreeTest {
     @Test
@@ -14,70 +17,22 @@ internal class AvlTreeTest {
         assertTrue(avl.isEmpty())
     }
 
-    @Test
-    fun `getSize() after addition`() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        assertEquals(5, avl.size)
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("getSizeInput")
+    fun <K : Comparable<K>, V> getSize(avl: AvlTree<K, V>, expected: Int) {
+        assertEquals(expected, avl.size)
     }
 
-    @Test
-    fun `getSize() after deletion`() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        avl.remove("work")
-        assertEquals(4, avl.size)
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("containsKeyInput")
+    fun <K : Comparable<K>, V> containsKey(avl: AvlTree<K, V>, key: K, expected: Boolean) {
+        assertEquals(expected, avl.containsKey(key))
     }
 
-    @Test
-    fun `getSize() after value update`() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        avl["work"] = 8
-        assertEquals(5, avl.size)
-    }
-
-    @Test
-    fun `containsKey() true`() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        assertTrue(avl.containsKey("fall"))
-    }
-
-    @Test
-    fun `containsKey() false`() {
-        val avl = avlTreeOf<Int, Int>()
-        assertFalse(avl.containsKey(42))
-    }
-
-    @Test
-    fun `containsKey() after deletion`() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        avl.remove("work")
-        assertFalse(avl.containsKey("work"))
-    }
-
-    @Test
-    fun `containsValue() true`() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        assertTrue(avl.containsValue(42))
-    }
-
-    @Test
-    fun `containsValue() false`() {
-        val avl = avlTreeOf<Int, Int>()
-        assertFalse(avl.containsValue(42))
-    }
-
-    @Test
-    fun `containsValue() after deletion`() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        avl.remove("work")
-        assertFalse(avl.containsValue(0))
-    }
-
-    @Test
-    fun `containsValue() after update`() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        avl["work"] = 8
-        assertFalse(avl.containsValue(0))
-        assertTrue(avl.containsValue(8))
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("containsValueInput")
+    fun <K : Comparable<K>, V> containsValue(avl: AvlTree<K, V>, value: V, expected: Boolean) {
+        assertEquals(expected, avl.containsValue(value))
     }
 
     @Test
@@ -103,18 +58,10 @@ internal class AvlTreeTest {
         assertEquals(keys, avl.keys)
     }
 
-    @Test
-    fun getValues() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        val values = listOf(3, 1, 42, 0, 70).sorted()
-        assertEquals(values, avl.values.sorted())
-    }
-
-    @Test
-    fun `getValues() with duplicates`() {
-        val avl = avlTreeOf("step" to 1, "climb" to 1, "fall" to 1, "work" to 0, "lie" to 70)
-        val values = listOf(1, 1, 1, 0, 70).sorted()
-        assertEquals(values, avl.values.sorted())
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("getValuesInput")
+    fun getValues(avl: AvlTree<String, Int>, expected: List<Int>) {
+        assertEquals(expected, avl.values.sorted())
     }
 
     @Test
@@ -125,54 +72,182 @@ internal class AvlTreeTest {
         assertEquals(0, avl.size)
     }
 
-    @Test
-    fun get() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        assertEquals(42, avl["fall"])
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("getInput")
+    fun <K : Comparable<K>, V> get(avl: AvlTree<K, V>, key: K, expected: V?) {
+        assertEquals(expected, avl[key])
     }
 
-    @Test
-    fun `get() null`() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        assertNull(avl["run"])
-    }
-
-    @Test
-    fun put() {
-        val avl = avlTreeOf<Int, String>()
-        avl[7] = "seven"
-        avl[2] = "two"
-        avl[1] = "one"
-        avl[10] = "ten"
-        val prev = avl.put(20, "twenty")
-        assertNull(prev)
-        val entries = mapOf(1 to "one", 2 to "two", 7 to "seven", 10 to "ten", 20 to "twenty").entries
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("putInput")
+    fun <K : Comparable<K>, V> put(avl: AvlTree<K, V>, entries: Set<Map.Entry<K, V>>, key: K, value: V, expected: V?) {
+        val prev = avl.put(key, value)
+        assertEquals(expected, prev)
         assertEquals(entries, avl.entries)
     }
 
-    @Test
-    fun `put() update value`() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        val prev = avl.put("work", 8)
-        val entries = mapOf("climb" to 1, "fall" to 42, "lie" to 70, "step" to 3, "work" to 8).entries
-        assertEquals(entries, avl.entries)
-        assertEquals(prev, 0)
-    }
-
-    @Test
-    fun remove() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        avl.remove("work")
-        val entries = mapOf("step" to 3, "climb" to 1, "fall" to 42, "lie" to 70).entries
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("removeInput")
+    fun <K : Comparable<K>, V> remove(avl: AvlTree<K, V>, entries: Set<Map.Entry<K, V>>, key: K, expected: V?) {
+        val prev = avl.remove(key)
+        assertEquals(expected, prev)
         assertEquals(entries, avl.entries)
     }
 
-    @Test
-    fun `remove() null`() {
-        val avl = avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
-        val entries = mapOf("climb" to 1, "fall" to 42, "lie" to 70, "step" to 3, "work" to 0).entries
-        val prev = avl.remove("sleep")
-        assertEquals(entries, avl.entries)
-        assertNull(prev)
+    companion object {
+        @JvmStatic
+        fun getSizeInput() = listOf(
+            Arguments.of(
+                Named.of(
+                    "addition",
+                    avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)
+                ),
+                5
+            ),
+            Arguments.of(
+                Named.of(
+                    "removal",
+                    avlTreeOf(
+                        "step" to 3,
+                        "climb" to 1,
+                        "fall" to 42,
+                        "work" to 0,
+                        "lie" to 70
+                    ).apply { this.remove("work") }
+                ),
+                4
+            ),
+            Arguments.of(
+                Named.of(
+                    "value update",
+                    avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70).apply {
+                        this["work"] = 8
+                    }
+                ),
+                5
+            )
+        )
+
+        @JvmStatic
+        fun containsKeyInput() = listOf(
+            Arguments.of(
+                Named.of("true", avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)),
+                "fall", true
+            ),
+            Arguments.of(
+                Named.of("false", avlTreeOf<Int, Int>()),
+                42, false
+            ),
+            Arguments.of(
+                Named.of(
+                    "removal",
+                    avlTreeOf(
+                        "step" to 3,
+                        "climb" to 1,
+                        "fall" to 42,
+                        "work" to 0,
+                        "lie" to 70
+                    ).apply { this.remove("work") }
+                ),
+                "work", false
+            )
+        )
+
+        @JvmStatic
+        fun containsValueInput() = listOf(
+            Arguments.of(
+                Named.of("true", avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)),
+                42, true
+            ),
+            Arguments.of(
+                Named.of("false", avlTreeOf<Int, Int>()),
+                42, false
+            ),
+            Arguments.of(
+                Named.of(
+                    "removal",
+                    avlTreeOf(
+                        "step" to 3,
+                        "climb" to 1,
+                        "fall" to 42,
+                        "work" to 0,
+                        "lie" to 70
+                    ).apply { this.remove("work") }
+                ),
+                0, false
+            ),
+            Arguments.of(
+                Named.of(
+                    "value update",
+                    avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70).apply {
+                        this["work"] = 8
+                    }.also { assertTrue(it.containsValue(8)) }
+                ),
+                0, false
+            )
+        )
+
+        @JvmStatic
+        fun getValuesInput() = listOf(
+            Arguments.of(
+                Named.of("basic", avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)),
+                listOf(3, 1, 42, 0, 70).sorted(),
+            ),
+            Arguments.of(
+                Named.of(
+                    "with duplicates",
+                    avlTreeOf("step" to 1, "climb" to 1, "fall" to 1, "work" to 0, "lie" to 70)
+                ),
+                listOf(1, 1, 1, 0, 70).sorted()
+            )
+        )
+
+        @JvmStatic
+        fun getInput() = listOf(
+            Arguments.of(
+                Named.of("basic", avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)),
+                "fall", 42
+            ),
+            Arguments.of(
+                Named.of("null", avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)),
+                "run", null
+            )
+        )
+
+        @JvmStatic
+        fun putInput() = listOf(
+            Arguments.of(
+                Named.of(
+                    "basic",
+                    avlTreeOf<Int, String>().apply {
+                        this[7] = "seven"
+                        this[2] = "two"
+                        this[1] = "one"
+                        this[10] = "ten"
+                    }
+                ),
+                mapOf(1 to "one", 2 to "two", 7 to "seven", 10 to "ten", 20 to "twenty").entries,
+                20, "twenty", null
+            ),
+            Arguments.of(
+                Named.of("value update", avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)),
+                mapOf("climb" to 1, "fall" to 42, "lie" to 70, "step" to 3, "work" to 8).entries,
+                "work", 8, 0
+            )
+        )
+
+        @JvmStatic
+        fun removeInput() = listOf(
+            Arguments.of(
+                Named.of("basic", avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)),
+                mapOf("step" to 3, "climb" to 1, "fall" to 42, "lie" to 70).entries,
+                "work", 0
+            ),
+            Arguments.of(
+                Named.of("null", avlTreeOf("step" to 3, "climb" to 1, "fall" to 42, "work" to 0, "lie" to 70)),
+                mapOf("climb" to 1, "fall" to 42, "lie" to 70, "step" to 3, "work" to 0).entries,
+                "sleep", null
+            )
+        )
     }
 }

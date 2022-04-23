@@ -73,9 +73,8 @@ internal class AvlNode<K : Comparable<K>, V>(
         }
     }
 
-    fun minimum(): AvlNode<K, V> {
-        return leftChild?.minimum() ?: this
-    }
+    val minimum: AvlNode<K, V>
+        get() = leftChild?.minimum ?: this
 
     fun removeMinimum(): AvlNode<K, V>? {
         if (leftChild == null) {
@@ -112,5 +111,11 @@ internal class AvlNode<K : Comparable<K>, V>(
         rightChild?.prettyPrint(level + 1).let { if (it != null) treeView.append(it) }
 
         return treeView.toString()
+    }
+
+    fun iterator(): Iterator<AvlNode<K, V>> = iterator {
+        leftChild?.iterator()?.let { yieldAll(it) }
+        yield(this@AvlNode)
+        rightChild?.iterator()?.let { yieldAll(it) }
     }
 }
