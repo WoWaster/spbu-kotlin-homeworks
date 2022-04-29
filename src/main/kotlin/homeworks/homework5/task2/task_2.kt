@@ -1,4 +1,3 @@
-//        @Suppress("LongMethod")
 package homeworks.homework5.task2
 
 import kotlin.random.Random
