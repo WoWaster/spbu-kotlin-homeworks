@@ -15,13 +15,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import tests.retest1.task2.models.Post
 
-const val SCREEN_FRACTION = 0.75F
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Post(post: Post) {
     Column(
-        Modifier.fillMaxWidth(SCREEN_FRACTION),
+        Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

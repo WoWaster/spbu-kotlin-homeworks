@@ -14,13 +14,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import tests.retest1.task2.models.Post
 
+const val SCREEN_FRACTION = 0.75F
+
 @Composable
 fun PostColumn(posts: List<Post>) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         val state = rememberLazyListState()
 
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(SCREEN_FRACTION),
             horizontalAlignment = Alignment.CenterHorizontally,
             state = state
         ) {
