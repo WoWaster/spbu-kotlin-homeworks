@@ -24,7 +24,6 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.8.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation(compose.desktop.currentOs)
-    implementation(compose.materialIconsExtended)
     implementation(compose.material3)
     implementation("io.ktor:ktor-client-core:2.0.1")
     implementation("io.ktor:ktor-client-cio:2.0.1")
