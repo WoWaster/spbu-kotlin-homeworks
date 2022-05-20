@@ -15,6 +15,7 @@ dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.19.0")
     testImplementation(platform("org.junit:junit-bom:5.8.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
     implementation("org.jetbrains.lets-plot:lets-plot-common:2.3.0")
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.2.0")
     implementation("org.slf4j:slf4j-nop:1.7.36")
