@@ -41,17 +41,23 @@ const val GRAPH_WIDTH = 1280
 const val GRAPH_HEIGHT = 720
 
 fun main() {
-    val timeThreadCountGraph = timeFromThreadCountGraph()
-    val timeListSizeGraph = timeFromListSize()
+    val timeThreadCountGraphThreads = timeFromThreadCountGraph()
+    val timeListSizeGraphThreads = timeFromListSize()
+    val timeThreadCountGraphCoroutines = timeFromThreadCountGraph(true)
+    val timeListSizeGraphCoroutines = timeFromListSize(true)
 
-    val plots = GGBunch().addPlot(timeThreadCountGraph, 0, 0).addPlot(timeListSizeGraph, 0, GRAPH_HEIGHT)
+    var plotCount = 0
+    val plots = GGBunch().addPlot(timeThreadCountGraphThreads, 0, plotCount++)
+        .addPlot(timeListSizeGraphThreads, 0, GRAPH_HEIGHT * plotCount++)
+        .addPlot(timeThreadCountGraphCoroutines, 0, GRAPH_HEIGHT * plotCount++)
+        .addPlot(timeListSizeGraphCoroutines, 0, GRAPH_HEIGHT * plotCount)
 
     val file = ggsave(plots, "plot.html")
     present(file)
 }
 
 @OptIn(ExperimentalTime::class)
-fun timeFromThreadCountGraph(): Plot {
+fun timeFromThreadCountGraph(useCoroutines: Boolean = false): Plot {
     val listToSort = generateRandomList(LIST_SIZE)
     val results = linkedMapOf<Int, Long>() // there's need to preserve the insertion order
 
@@ -63,7 +69,7 @@ fun timeFromThreadCountGraph(): Plot {
     }
 
     for (nOfThreads in nOfThreadsSet) {
-        val time = measureTime { listToSort.toMutableList().mergeSort(nOfThreads) }
+        val time = measureTime { listToSort.toMutableList().mergeSort(nOfThreads, useCoroutines) }
         results[nOfThreads] = time.inWholeMilliseconds
     }
 
@@ -97,11 +103,12 @@ fun timeFromThreadCountGraph(): Plot {
         y = (minTime?.value ?: 0) + TEXT_VERTICAL_OFFSET
     )
 
+    val threadingMechanism = if (useCoroutines) "Kotlin coroutines" else "Java threads"
     val lookAndFeel = scaleYContinuous(format = "{} ms") + scaleXContinuous(
         format = "{}",
         breaks = nOfThreadsSet.toList(),
     ) + ggsize(GRAPH_WIDTH, GRAPH_HEIGHT) + labs(
-        title = "Multithreaded mergesort with Java threads.",
+        title = "Multithreaded mergesort with $threadingMechanism.",
         subtitle = "Time from thread count plot with fixed list size = $LIST_SIZE",
         color = "",
         x = "Number of threads",
@@ -115,7 +122,7 @@ fun timeFromThreadCountGraph(): Plot {
 }
 
 @OptIn(ExperimentalTime::class)
-fun timeFromListSize(): Plot {
+fun timeFromListSize(useCoroutines: Boolean = false): Plot {
     val data = mutableMapOf<String, Any>()
     var plot = letsPlot(data)
 
@@ -133,7 +140,7 @@ fun timeFromListSize(): Plot {
         for (listSize in MIN_LIST_SIZE..MAX_LIST_SIZE step LIST_SIZE_STEP) {
             val listToSort = generateRandomList(listSize)
 
-            val time = measureTime { listToSort.toMutableList().mergeSort(nOfThreads) }
+            val time = measureTime { listToSort.toMutableList().mergeSort(nOfThreads, useCoroutines) }
             results[listSize] = time.inWholeMilliseconds
         }
 
