@@ -1,13 +1,24 @@
 package homeworks.homework4
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlin.math.ceil
 import kotlin.math.floor
 
-private class MergeSort<E : Comparable<E>>(var list: MutableList<E>, var nOfThreads: Int) {
+private class MergeSort<E : Comparable<E>>(
+    var list: MutableList<E>,
+    var nOfThreads: Int,
+    val useCoroutines: Boolean = false
+) {
     fun sort() =
         when (nOfThreads) {
             1 -> singleThreadSort()
-            else -> multiThreadSort()
+            else -> when (useCoroutines) {
+                true -> coroutineSort()
+                false -> multiThreadSort()
+            }
         }
 
     fun singleThreadSort() {
@@ -50,6 +61,24 @@ private class MergeSort<E : Comparable<E>>(var list: MutableList<E>, var nOfThre
         merge()
     }
 
+    fun coroutineSort() = runBlocking(Dispatchers.Default) {
+        insideCoroutineSort()
+    }
+
+    suspend fun insideCoroutineSort() {
+        if (nOfThreads == 1) {
+            singleThreadSort()
+            return
+        }
+        coroutineScope {
+            val (leftThreads, rightThreads) = divideThreads()
+
+            launch { MergeSort(list.subList(0, list.size / 2), leftThreads, true).insideCoroutineSort() }
+            launch { MergeSort(list.subList(list.size / 2, list.size), rightThreads, true).insideCoroutineSort() }
+        }
+        merge()
+    }
+
     fun divideThreads(): Pair<Int, Int> {
         val leftThreads = nOfThreads
         val left = ceil(leftThreads.toDouble() / 2).toInt()
@@ -62,10 +91,11 @@ private class MergeSort<E : Comparable<E>>(var list: MutableList<E>, var nOfThre
  * Sorts list using merge sort.
  * [nOfThreads] controls used algorithm:
  * 1 will use basic single core algorithm, while number >= 2 will use multithreaded algorithm.
+ * [useCoroutines] with [nOfThreads] = 1 means nothing.
  */
-fun <E : Comparable<E>> MutableList<E>.mergeSort(nOfThreads: Int = 1) {
+fun <E : Comparable<E>> MutableList<E>.mergeSort(nOfThreads: Int = 1, useCoroutines: Boolean = false) {
     require(nOfThreads >= 1) { "Number of threads can't be less than 1." }
-    val mergeSort = MergeSort(this, nOfThreads)
+    val mergeSort = MergeSort(this, nOfThreads, useCoroutines)
     mergeSort.sort()
 }
 
@@ -73,10 +103,11 @@ fun <E : Comparable<E>> MutableList<E>.mergeSort(nOfThreads: Int = 1) {
  * Sorts list using merge sort.
  * [nOfThreads] controls used algorithm:
  * 1 will use basic single core algorithm, while number >= 2 will use multithreaded algorithm.
+ * [useCoroutines] with [nOfThreads] = 1 means nothing.
  */
-fun <E : Comparable<E>> List<E>.mergeSorted(nOfThreads: Int = 1): List<E> {
+fun <E : Comparable<E>> List<E>.mergeSorted(nOfThreads: Int = 1, useCoroutines: Boolean = false): List<E> {
     require(nOfThreads >= 1) { "Number of threads can't be less than 1." }
-    val mergeSort = MergeSort(this.toMutableList(), nOfThreads)
+    val mergeSort = MergeSort(this.toMutableList(), nOfThreads, useCoroutines)
     mergeSort.sort()
     return mergeSort.list
 }

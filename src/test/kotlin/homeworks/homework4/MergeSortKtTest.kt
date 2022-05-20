@@ -22,6 +22,14 @@ internal class MergeSortKtTest {
         assertEquals(stdlibSortedList, list)
     }
 
+    @RepeatedTest(10, name = "Mergesort with coroutines {currentRepetition}/{totalRepetitions}")
+    fun mergeSortCoroutine() {
+        val list = generateRandomList(Random.nextInt(10, 1000)).toMutableList()
+        val stdlibSortedList = list.sorted()
+        list.mergeSort(Runtime.getRuntime().availableProcessors(), true)
+        assertEquals(stdlibSortedList, list)
+    }
+
     @RepeatedTest(10, name = "Mergesorted with single thread {currentRepetition}/{totalRepetitions}")
     fun mergeSortedSingleThread() {
         val list = generateRandomList(Random.nextInt(10, 1000))
@@ -35,6 +43,14 @@ internal class MergeSortKtTest {
         val list = generateRandomList(Random.nextInt(10, 1000))
         val stdlibSortedList = list.sorted()
         val sortedList = list.mergeSorted(Runtime.getRuntime().availableProcessors())
+        assertEquals(stdlibSortedList, sortedList)
+    }
+
+    @RepeatedTest(10, name = "Mergesorted with coroutines {currentRepetition}/{totalRepetitions}")
+    fun mergeSortedCoroutine() {
+        val list = generateRandomList(Random.nextInt(10, 1000))
+        val stdlibSortedList = list.sorted()
+        val sortedList = list.mergeSorted(Runtime.getRuntime().availableProcessors(), true)
         assertEquals(stdlibSortedList, sortedList)
     }
 }
