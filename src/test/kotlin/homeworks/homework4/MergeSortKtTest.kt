@@ -5,6 +5,8 @@ import homeworks.homework4.sort.mergeSort
 import homeworks.homework4.sort.mergeSorted
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.RepeatedTest
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import kotlin.random.Random
 
 internal class MergeSortKtTest {
@@ -59,5 +61,12 @@ internal class MergeSortKtTest {
         val threadCount = Random.nextInt(2, Runtime.getRuntime().availableProcessors() + 1)
         val sortedList = list.mergeSorted(ThreadingType.COROUTINES, threadCount)
         assertEquals(stdlibSortedList, sortedList)
+    }
+
+    @Test
+    fun `nOfThreads less than 1`() {
+        val list = listOf(1, 3, 2)
+        val exception = assertThrows<IllegalArgumentException> { list.mergeSorted(ThreadingType.JAVA_THREADS, -1) }
+        assertEquals("Number of threads can't be less than 1.", exception.message)
     }
 }
