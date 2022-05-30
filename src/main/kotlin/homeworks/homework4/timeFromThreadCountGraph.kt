@@ -1,5 +1,7 @@
 package homeworks.homework4
 
+import homeworks.homework4.sort.ThreadingType
+import homeworks.homework4.sort.mergeSort
 import jetbrains.letsPlot.geom.geomHLine
 import jetbrains.letsPlot.geom.geomLine
 import jetbrains.letsPlot.geom.geomSmooth
@@ -25,7 +27,7 @@ private const val MIDDLE_THREAD_COUNT = 64
 private const val MAX_THREAD_COUNT = 1024
 
 @OptIn(ExperimentalTime::class)
-fun timeFromThreadCountGraph(useCoroutines: Boolean = false): Plot {
+fun timeFromThreadCountGraph(threadingType: ThreadingType = ThreadingType.JAVA_THREADS): Plot {
     val listToSort = generateRandomList(LIST_SIZE)
     val results = linkedMapOf<Int, Long>() // there's need to preserve the insertion order
 
@@ -37,7 +39,7 @@ fun timeFromThreadCountGraph(useCoroutines: Boolean = false): Plot {
     }
 
     for (nOfThreads in nOfThreadsSet) {
-        val time = measureTime { listToSort.toMutableList().mergeSort(nOfThreads, useCoroutines) }
+        val time = measureTime { listToSort.toMutableList().mergeSort(threadingType, nOfThreads) }
         results[nOfThreads] = time.inWholeMilliseconds
     }
 
@@ -71,7 +73,7 @@ fun timeFromThreadCountGraph(useCoroutines: Boolean = false): Plot {
         y = (minTime?.value ?: 0) + TEXT_VERTICAL_OFFSET
     )
 
-    val threadingMechanism = if (useCoroutines) "Kotlin coroutines" else "Java threads"
+    val threadingMechanism = if (threadingType == ThreadingType.COROUTINES) "Kotlin coroutines" else "Java threads"
     val lookAndFeel = scaleYContinuous(format = "{} ms") + scaleXContinuous(
         format = "{}",
         breaks = nOfThreadsSet.toList(),

@@ -1,5 +1,8 @@
 package homeworks.homework4
 
+import homeworks.homework4.sort.ThreadingType
+import homeworks.homework4.sort.mergeSort
+import homeworks.homework4.sort.mergeSorted
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.RepeatedTest
 import kotlin.random.Random
@@ -19,7 +22,7 @@ internal class MergeSortKtTest {
         val list = generateRandomList(Random.nextInt(10, 1000)).toMutableList()
         val stdlibSortedList = list.sorted()
         val threadCount = Random.nextInt(2, Runtime.getRuntime().availableProcessors() + 1)
-        list.mergeSort(threadCount)
+        list.mergeSort(ThreadingType.JAVA_THREADS, threadCount)
         assertEquals(stdlibSortedList, list)
     }
 
@@ -28,7 +31,7 @@ internal class MergeSortKtTest {
         val list = generateRandomList(Random.nextInt(10, 1000)).toMutableList()
         val stdlibSortedList = list.sorted()
         val threadCount = Random.nextInt(2, Runtime.getRuntime().availableProcessors() + 1)
-        list.mergeSort(threadCount, true)
+        list.mergeSort(ThreadingType.COROUTINES, threadCount)
         assertEquals(stdlibSortedList, list)
     }
 
@@ -45,7 +48,7 @@ internal class MergeSortKtTest {
         val list = generateRandomList(Random.nextInt(10, 1000))
         val stdlibSortedList = list.sorted()
         val threadCount = Random.nextInt(2, Runtime.getRuntime().availableProcessors() + 1)
-        val sortedList = list.mergeSorted(threadCount)
+        val sortedList = list.mergeSorted(ThreadingType.JAVA_THREADS, threadCount)
         assertEquals(stdlibSortedList, sortedList)
     }
 
@@ -54,7 +57,7 @@ internal class MergeSortKtTest {
         val list = generateRandomList(Random.nextInt(10, 1000))
         val stdlibSortedList = list.sorted()
         val threadCount = Random.nextInt(2, Runtime.getRuntime().availableProcessors() + 1)
-        val sortedList = list.mergeSorted(threadCount, true)
+        val sortedList = list.mergeSorted(ThreadingType.COROUTINES, threadCount)
         assertEquals(stdlibSortedList, sortedList)
     }
 }
