@@ -1,6 +1,6 @@
 package homeworks.homework4.sort
 
-internal class SingleThreadMergeSort<E : Comparable<E>>(override val list: MutableList<E>) : MergeSort<E>() {
+internal class SingleThreadMergeSort<E : Comparable<E>>(list: MutableList<E>) : MergeSort<E>(list) {
     override fun sort() {
         if (list.size <= 1) return
 

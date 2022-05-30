@@ -3,9 +3,7 @@ package homeworks.homework4.sort
 import kotlin.math.ceil
 import kotlin.math.floor
 
-internal abstract class MergeSort<E : Comparable<E>> {
-    abstract val list: MutableList<E>
-
+internal abstract class MergeSort<E : Comparable<E>>(val list: MutableList<E>) {
     abstract fun sort()
 
     fun merge() {

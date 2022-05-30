@@ -1,10 +1,10 @@
 package homeworks.homework4.sort
 
 /**
- * Sorts list using merge sort.
- * [nOfThreads] controls used algorithm:
- * 1 will use basic single core algorithm, while number >= 2 will use multithreaded algorithm.
- * [ThreadingType.SINGLE_THREAD] with [nOfThreads] = 1 means nothing.
+ * Sorts mutable list in-place using merge sort.
+ * [threadingType] decides which algorithm to use.
+ * [nOfThreads] = 1 always use single thread algorithm.
+ * [ThreadingType.SINGLE_THREAD] with any [nOfThreads] means single threaded algorithm.
  */
 fun <E : Comparable<E>> MutableList<E>.mergeSort(
     threadingType: ThreadingType = ThreadingType.SINGLE_THREAD,
@@ -21,9 +21,9 @@ fun <E : Comparable<E>> MutableList<E>.mergeSort(
 
 /**
  * Sorts list using merge sort.
- * [nOfThreads] controls used algorithm:
- * 1 will use basic single core algorithm, while number >= 2 will use multithreaded algorithm.
- * [ThreadingType.SINGLE_THREAD] with [nOfThreads] = 1 means nothing.
+ * [threadingType] decides which algorithm to use.
+ * [nOfThreads] = 1 always use single thread algorithm.
+ * [ThreadingType.SINGLE_THREAD] with any [nOfThreads] means single threaded algorithm.
  */
 fun <E : Comparable<E>> List<E>.mergeSorted(
     threadingType: ThreadingType = ThreadingType.SINGLE_THREAD,

@@ -1,7 +1,7 @@
 package homeworks.homework4.sort
 
-internal class JavaThreadMergeSort<E : Comparable<E>>(override val list: MutableList<E>, var nOfThreads: Int) :
-    MergeSort<E>() {
+internal class JavaThreadMergeSort<E : Comparable<E>>(list: MutableList<E>, private val nOfThreads: Int) :
+    MergeSort<E>(list) {
     override fun sort() {
         if (nOfThreads == 1) {
             SingleThreadMergeSort(list).sort()

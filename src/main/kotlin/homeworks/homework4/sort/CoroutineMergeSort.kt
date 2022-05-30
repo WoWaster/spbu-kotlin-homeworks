@@ -5,8 +5,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-internal class CoroutineMergeSort<E : Comparable<E>>(override val list: MutableList<E>, var nOfThreads: Int) :
-    MergeSort<E>() {
+internal class CoroutineMergeSort<E : Comparable<E>>(list: MutableList<E>, private val nOfThreads: Int) :
+    MergeSort<E>(list) {
     override fun sort() = runBlocking(Dispatchers.Default) {
         insideCoroutineSort()
     }
