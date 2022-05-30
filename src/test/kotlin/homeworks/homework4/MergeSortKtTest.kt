@@ -27,7 +27,8 @@ internal class MergeSortKtTest {
     fun mergeSortCoroutine() {
         val list = generateRandomList(Random.nextInt(10, 1000)).toMutableList()
         val stdlibSortedList = list.sorted()
-        list.mergeSort(Runtime.getRuntime().availableProcessors(), true)
+        val threadCount = Random.nextInt(2, Runtime.getRuntime().availableProcessors() + 1)
+        list.mergeSort(threadCount, true)
         assertEquals(stdlibSortedList, list)
     }
 
@@ -52,7 +53,8 @@ internal class MergeSortKtTest {
     fun mergeSortedCoroutine() {
         val list = generateRandomList(Random.nextInt(10, 1000))
         val stdlibSortedList = list.sorted()
-        val sortedList = list.mergeSorted(Runtime.getRuntime().availableProcessors(), true)
+        val threadCount = Random.nextInt(2, Runtime.getRuntime().availableProcessors() + 1)
+        val sortedList = list.mergeSorted(threadCount, true)
         assertEquals(stdlibSortedList, sortedList)
     }
 }
