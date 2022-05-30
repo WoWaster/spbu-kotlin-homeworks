@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource
 internal class MatrixTest {
     @Test
     fun `incorrect input`() {
-        val exception = assertThrows<IllegalStateException> { matrixOf(listOf(1, 2, 3), listOf(4, 5)) }
+        val exception = assertThrows<IllegalStateException> { Matrix(listOf(1, 2, 3), listOf(4, 5)) }
         assertEquals("Matrix rows have not equal column count.", exception.message)
     }
 
@@ -33,12 +33,12 @@ internal class MatrixTest {
 
     @Test
     fun `incompatible matrices multiplication`() {
-        val matrix1 = matrixOf(
+        val matrix1 = Matrix(
             listOf(3, 8, 3),
             listOf(3, 9, 9),
             listOf(1, 5, 5),
         )
-        val matrix2 = matrixOf(
+        val matrix2 = Matrix(
             listOf(80), listOf(58), listOf(74), listOf(100), listOf(78)
         )
 
@@ -55,21 +55,21 @@ internal class MatrixTest {
             Arguments.of(
                 Named.of(
                     "square matrix",
-                    matrixOf(
+                    Matrix(
                         listOf(3, 8, 3), listOf(3, 9, 9), listOf(1, 5, 5),
                     )
                 ),
-                matrixOf(
+                Matrix(
                     listOf(1, 3, 6), listOf(2, 6, 7), listOf(5, 1, 8),
                 ),
-                matrixOf(
+                Matrix(
                     listOf(34, 60, 98), listOf(66, 72, 153), listOf(36, 38, 81)
                 )
             ),
             Arguments.of(
                 Named.of(
                     "tall matrix",
-                    matrixOf(
+                    Matrix(
                         listOf(7, 4, 6),
                         listOf(1, 6, 5),
                         listOf(6, 5, 5),
@@ -77,23 +77,23 @@ internal class MatrixTest {
                         listOf(2, 4, 9),
                     )
                 ),
-                matrixOf(
+                Matrix(
                     listOf(4), listOf(4), listOf(6),
                 ),
-                matrixOf(
+                Matrix(
                     listOf(80), listOf(58), listOf(74), listOf(100), listOf(78)
                 )
             ),
             Arguments.of(
                 Named.of(
                     "wide matrix",
-                    matrixOf(
+                    Matrix(
                         listOf(5, 1, 1, 6, 4, 8, 5),
                         listOf(9, 8, 8, 7, 1, 8, 4),
                         listOf(4, 1, 3, 9, 2, 7, 9),
                     )
                 ),
-                matrixOf(
+                Matrix(
                     listOf(9, 3, 7, 7),
                     listOf(7, 4, 8, 9),
                     listOf(3, 8, 7, 8),
@@ -102,7 +102,7 @@ internal class MatrixTest {
                     listOf(6, 9, 8, 4),
                     listOf(1, 9, 4, 5),
                 ),
-                matrixOf(
+                Matrix(
                     listOf(198, 190, 166, 163), listOf(285, 259, 293, 292), listOf(202, 225, 189, 191)
                 )
             )

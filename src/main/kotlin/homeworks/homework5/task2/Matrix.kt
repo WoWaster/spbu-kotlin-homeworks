@@ -7,9 +7,7 @@ import kotlinx.coroutines.runBlocking
 data class Matrix(
     private val matrix: List<List<Int>>
 ) {
-    companion object {
-        var useCoroutines = true
-    }
+    constructor(vararg rows: List<Int>) : this(rows.asList())
 
     val nOfRows: Int = matrix.size
     val nOfColumns: Int = matrix[0].size
@@ -24,10 +22,8 @@ data class Matrix(
 
     override fun toString(): String {
         val matrixView = StringBuilder()
-        for (row in matrix) {
-            matrixView.append(row.joinToString(separator = " ", prefix = "\n"))
-        }
-        matrixView.deleteAt(0)
+
+        matrixView.append(matrix.joinToString(separator = "\n") { it.joinToString(separator = " ") })
 
         return matrixView.toString()
     }
@@ -83,6 +79,8 @@ data class Matrix(
 
         return Matrix(resultMatrix)
     }
-}
 
-fun matrixOf(vararg rows: List<Int>): Matrix = Matrix(rows.asList())
+    companion object {
+        var useCoroutines = true
+    }
+}
