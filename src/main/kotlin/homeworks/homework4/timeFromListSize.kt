@@ -1,5 +1,7 @@
 package homeworks.homework4
 
+import homeworks.homework4.sort.ThreadingType
+import homeworks.homework4.sort.mergeSort
 import jetbrains.letsPlot.geom.geomSmooth
 import jetbrains.letsPlot.ggsize
 import jetbrains.letsPlot.intern.Plot
@@ -17,7 +19,7 @@ private const val MIN_LIST_SIZE = 100_000
 private const val MAX_LIST_SIZE = 1_000_000
 
 @OptIn(ExperimentalTime::class)
-fun timeFromListSize(): Plot {
+fun timeFromListSize(threadingType: ThreadingType = ThreadingType.JAVA_THREADS): Plot {
     val data = mutableMapOf<String, Any>()
     var plot = letsPlot(data)
 
@@ -35,7 +37,7 @@ fun timeFromListSize(): Plot {
         for (listSize in MIN_LIST_SIZE..MAX_LIST_SIZE step LIST_SIZE_STEP) {
             val listToSort = generateRandomList(listSize)
 
-            val time = measureTime { listToSort.toMutableList().mergeSort(nOfThreads) }
+            val time = measureTime { listToSort.toMutableList().mergeSort(threadingType, nOfThreads) }
             results[listSize] = time.inWholeMilliseconds
         }
 
